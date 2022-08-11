@@ -1,0 +1,178 @@
+---
+# This default profile is used when running a single instance completely standalone
+spring:
+  config:
+    activate:
+      on-profile: default
+server:
+  port: 9000
+eureka:
+  instance:
+    hostname: default-eureka-server.com
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+management:
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    web:
+      server:
+        request:
+          autotime:
+            percentiles: 0.90,0.95,0.99
+    tags:
+      application: ${spring.application.name}
+    export:
+      prometheus:
+        enabled: true
+  endpoints:
+    prometheus:
+      enabled: true
+      path: /metrics
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  health:
+    mail:
+      enabled: false
+---
+#peer-1 and profile
+spring:
+  config:
+    activate:
+      on-profile: peer-1
+  application:
+    name: eureka-server-clustered
+server:
+  port: 9001
+eureka:
+  instance:
+    hostname: peer-1-server.com
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://peer-2-server.com:9002/eureka/,http://peer-3-server.com:9003/eureka/
+management:
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    web:
+      server:
+        request:
+          autotime:
+            percentiles: 0.90,0.95,0.99
+    tags:
+      application: ${spring.application.name}
+    export:
+      prometheus:
+        enabled: true
+  endpoints:
+    prometheus:
+      enabled: true
+      path: /metrics
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  health:
+    mail:
+      enabled: false
+---
+# peer-2 and profile
+spring:
+  config:
+    activate:
+      on-profile: peer-2
+  application:
+    name: eureka-server-clustered
+server:
+  port: 9002
+eureka:
+  instance:
+    hostname: peer-2-server.com
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://peer-1-server.com:9001/eureka/,http://peer-3-server.com:9003/eureka/
+management:
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    web:
+      server:
+        request:
+          autotime:
+            percentiles: 0.90,0.95,0.99
+    tags:
+      application: ${spring.application.name}
+    export:
+      prometheus:
+        enabled: true
+  endpoints:
+    prometheus:
+      enabled: true
+      path: /metrics
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  health:
+    mail:
+      enabled: false
+---
+# peer-3 and profile
+spring:
+  config:
+    activate:
+      on-profile: peer-3
+  application:
+    name: eureka-server-clustered
+server:
+  port: 9003
+eureka:
+  instance:
+    hostname: peer-3-server.com
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://peer-1-server.com:9001/eureka/,http://peer-2-server.com:9002/eureka/
+management:
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    web:
+      server:
+        request:
+          autotime:
+            percentiles: 0.90,0.95,0.99
+    tags:
+      application: ${spring.application.name}
+    export:
+      prometheus:
+        enabled: true
+  endpoints:
+    prometheus:
+      enabled: true
+      path: /metrics
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  health:
+    mail:
+      enabled: false
