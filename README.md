@@ -5,7 +5,9 @@
 ##  edit host file
 
    127.0.0.1 peer-1-server.com
+
    127.0.0.1 peer-2-server.com
+
    127.0.0.1 peer-3-server.com
    
 ## run eureka server 
